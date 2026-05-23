@@ -16,19 +16,19 @@ int main() {
         {
         case 'w':
             field.moveUp();
-            field.spawnTile();
+            field.spawnTile(field.getEmptyTiles());
             break;
         case 's':
             field.moveDown();
-            field.spawnTile();
+            field.spawnTile(field.getEmptyTiles());
             break;
         case 'a':
             field.moveLeft();
-            field.spawnTile();
+            field.spawnTile(field.getEmptyTiles());
             break;
         case 'd':
             field.moveRight();
-            field.spawnTile();
+            field.spawnTile(field.getEmptyTiles());
             break;
         default:
             return 0;

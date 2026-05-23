@@ -20,60 +20,24 @@ Public methods:
 */
 
 // PRIVATE
-std::vector<Tile> Field::processLine(const std::vector<Tile>& sourceLine, Score &score) {
-    std::vector<Tile> result;
-    Tile pending = 0;
-    bool hasPending = false;
-    
-    for (Tile element : sourceLine) {
-        if (element == 0) continue;
-        
-        if (!hasPending) {
-            pending = element;
-            hasPending = true;
-            continue;
-        }
-        
-        if (element == pending) {
-            result.push_back(pending * 2);
-            score += pending * 2;
-            hasPending = false;
-            pending = 0;
-        } else {
-            result.push_back(pending);
-            pending = element;
-        }
-    }
-    
-    if (hasPending) {
-        result.push_back(pending);
-    }
-    
-    while (result.size() < sourceLine.size()) {
-        result.push_back(0);
-    }
-    
-    return result;
-}
-
-Line Field::getRow(size_t rowIndex) const {
+Line& Field::getRow(size_t rowIndex) const {
     return this->field[rowIndex];
 }
 
-std::vector<Tile> Field::getColumn(size_t columnIndex) const {
+Line& Field::getColumn(size_t columnIndex) const {
     // from top to bottom
-    std::vector<Tile> column;
+    Line column;
     for (size_t i = 0; i < this->FieldSize; ++i) {
         column.push_back(this->field[i][columnIndex]);
     }
     return column;
 }
 
-void Field::setRow(size_t rowIndex, const std::vector<Tile> &line) {
+void Field::setRow(size_t rowIndex, const Line &line) {
     this->field[rowIndex] = line;
 }
 
-void Field::setColumn(size_t columnIndex, const std::vector<Tile> &line) {
+void Field::setColumn(size_t columnIndex, const Line &line) {
     // from top to bottom (same)
     for (size_t i = 0; i < this->FieldSize; ++i) {
         this->field[i][columnIndex] = line[i];
@@ -81,7 +45,10 @@ void Field::setColumn(size_t columnIndex, const std::vector<Tile> &line) {
 }
 
 void Field::reset() {
-    this->field.resize(this->FieldSize, std::vector<Tile>(this->FieldSize, 0));
+    this->field.resize(this->FieldSize);
+    for (size_t i = 0; i < this->FieldSize; ++i) {
+        this->field[i] = Line(this->FieldSize);
+    }
 }
 
 // PUBLIC
@@ -89,7 +56,7 @@ Field::Field(size_t fieldSize) : mt(std::random_device{}()), FieldSize(fieldSize
     this->reset();
 }
 
-void printVector(const std::vector<Tile> &arr) {
+void printVector(const Line &arr) {
     for (size_t i = 0; i < arr.size(); ++i) {
         printf("%llu ", arr[i]);
     }
@@ -99,9 +66,9 @@ void printVector(const std::vector<Tile> &arr) {
 bool Field::moveUp() {
     auto oldField = this->field;
     for (size_t i = 0; i < this->FieldSize; ++i) {
-        std::vector<Tile> column;
+        Line column;
         column = getColumn(i);
-        column = processLine(column, this->score);
+        column.process();
         setColumn(i, column);
     }
     return this->field != oldField;
@@ -110,10 +77,10 @@ bool Field::moveUp() {
 bool Field::moveDown() {
     auto oldField = this->field;
     for (size_t i = 0; i < this->FieldSize; ++i) {
-        std::vector<Tile> column;
+        Line column;
         column = getColumn(i);
         std::reverse(column.begin(), column.end());
-        column = processLine(column, this->score);
+        column.process();
         std::reverse(column.begin(), column.end());
         setColumn(i, column);
     }
@@ -122,10 +89,10 @@ bool Field::moveDown() {
 
 bool Field::moveLeft() {
     auto oldField = this->field;
-    std::vector<Tile> row;
+    Line row;
     for (size_t i = 0; i < this->FieldSize; ++i) {
         row = getRow(i);
-        row = processLine(row, this->score);
+        row.process();
         setRow(i, row);
     }
     return this->field != oldField;
@@ -133,11 +100,11 @@ bool Field::moveLeft() {
 
 bool Field::moveRight() {
     auto oldField = this->field;
-    std::vector<Tile> row;
+    Line row;
     for (size_t i = 0; i < this->FieldSize; ++i) {
         row = getRow(i);
         std::reverse(row.begin(), row.end());
-        row = processLine(row, this->score);
+        row.process();
         std::reverse(row.begin(), row.end());
         setRow(i, row);
     }

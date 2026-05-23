@@ -19,12 +19,10 @@ private:
     size_t FieldSize = 4;
     std::vector<Line> field;
 
-    std::vector<Tile> processLine(const std::vector<Tile> &sourceLine, Score &score);
-
-    Line getRow(size_t rowIndex) const;
-    std::vector<Tile> getColumn(size_t columnIndex) const;
-    void setRow(size_t rowIndex, const std::vector<Tile> &line);
-    void setColumn(size_t columnIndex, const std::vector<Tile> &line);
+    Line& getRow(size_t rowIndex) const;
+    Line& getColumn(size_t columnIndex) const;
+    void setRow(size_t rowIndex, const Line &line);
+    void setColumn(size_t columnIndex, const Line &line);
 
     void reset();
     void setSize(size_t size);

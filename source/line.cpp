@@ -1,5 +1,11 @@
 #include "line.h"
 
+/*
+Fields:
+    std::vector<Tile> line;
+    Score score;
+*/
+
 Line::Line() {
     this->line.clear();
     this->line.reserve(4);
@@ -10,7 +16,7 @@ Line::Line(size_t length) {
     this->line.reserve(length);
 }
 
-void Line::processLine() {
+void Line::process() {
     std::vector<Tile> result;
     Tile pending = 0;
     bool hasPending = false;
@@ -39,9 +45,56 @@ void Line::processLine() {
         result.push_back(pending);
     }
     
-    while (result.size() < sourceLine.size()) {
+    while (result.size() < this->line.size()) {
         result.push_back(0);
     }
     
-    return result;
+    this->line = result;
+}
+
+// base methods
+void Line::push_back(Tile tile) {
+    this->line.push_back(tile);
+}
+
+size_t Line::size() {
+    return this->line.size();
+}
+
+size_t Line::size() const {
+    return this->line.size();
+}
+
+// overloadings
+Tile& Line::operator[](size_t index) {
+    return this->line[index];
+}
+
+const Tile& Line::operator[](size_t index) const {
+    return this->line[index];
+}
+
+bool Line::operator==(const Line &other) const {
+    return this->line == other.line && this->score == other.score;
+}
+
+bool Line::operator!=(const Line &other) const {
+    return !(*this == other);
+}
+
+// iterators
+std::vector<Tile>::iterator Line::begin() {
+    return this->line.begin();
+}
+
+std::vector<Tile>::iterator Line::end() {
+    return this->line.end();
+}
+
+std::vector<Tile>::const_iterator Line::begin() const {
+    return this->line.begin();
+}
+
+std::vector<Tile>::const_iterator Line::end() const {
+    return this->line.end();
 }

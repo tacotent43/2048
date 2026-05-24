@@ -4,7 +4,7 @@
 
 struct Line {
     std::vector<Tile> line;
-    Score score;
+    Score score = 0;
 
     explicit Line();
     Line(size_t length);

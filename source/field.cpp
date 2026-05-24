@@ -13,10 +13,7 @@ Private methods:
     void setColumn(size_t idx);
 
 Public methods: 
-    void moveUp();
-    void moveDown();
-    void moveLeft();
-    void moveRight();
+    bool move(Direction direction);
 */
 
 // PRIVATE
@@ -26,9 +23,9 @@ Line Field::getRow(size_t rowIndex) const {
 
 Line Field::getColumn(size_t columnIndex) const {
     // from top to bottom
-    Line column;
+    Line column(this->FieldSize);
     for (size_t i = 0; i < this->FieldSize; ++i) {
-        column.push_back(this->field[i][columnIndex]);
+        column[i] = this->field[i][columnIndex];
     }
     return column;
 }
@@ -65,8 +62,8 @@ void printVector(const Line &arr) {
 
 bool Field::move(Direction direction) {
     auto oldField = this->field;
-    Line column;
-    Line row;
+    Line column(this->FieldSize);
+    Line row(this->FieldSize);
 
     switch (direction) {
     case Direction::up:
@@ -91,6 +88,7 @@ bool Field::move(Direction direction) {
             row.process();
             setRow(i, row);
         }
+        break;
     case Direction::right:
         for (size_t i = 0; i < this->FieldSize; ++i) {
             row = getRow(i);
@@ -99,6 +97,7 @@ bool Field::move(Direction direction) {
             std::reverse(row.begin(), row.end());
             setRow(i, row);
         }
+        break;
     default:
         throw std::exception();
     }

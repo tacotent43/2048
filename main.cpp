@@ -10,6 +10,9 @@ int main() {
     Field field(4);
     char action;
 
+    field.spawnTile(field.getEmptyTiles());
+    field.spawnTile(field.getEmptyTiles());
+
     while (true) {
         field.debug();
         std::cin >> action;

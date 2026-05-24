@@ -8,7 +8,7 @@ Fields:
 
 Line::Line() {
     this->line.clear();
-    this->line.resize(4);
+    this->line.resize(0);
 }
 
 Line::Line(size_t length) {

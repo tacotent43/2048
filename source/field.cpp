@@ -20,11 +20,11 @@ Public methods:
 */
 
 // PRIVATE
-Line& Field::getRow(size_t rowIndex) const {
+Line Field::getRow(size_t rowIndex) const {
     return this->field[rowIndex];
 }
 
-Line& Field::getColumn(size_t columnIndex) const {
+Line Field::getColumn(size_t columnIndex) const {
     // from top to bottom
     Line column;
     for (size_t i = 0; i < this->FieldSize; ++i) {
@@ -63,54 +63,47 @@ void printVector(const Line &arr) {
     printf("\n");
 }
 
-bool Field::moveUp() {
+bool Field::move(Direction direction) {
     auto oldField = this->field;
-    for (size_t i = 0; i < this->FieldSize; ++i) {
-        Line column;
-        column = getColumn(i);
-        column.process();
-        setColumn(i, column);
-    }
-    return this->field != oldField;
-}
+    Line column;
+    Line row;
 
-bool Field::moveDown() {
-    auto oldField = this->field;
-    for (size_t i = 0; i < this->FieldSize; ++i) {
-        Line column;
-        column = getColumn(i);
-        std::reverse(column.begin(), column.end());
-        column.process();
-        std::reverse(column.begin(), column.end());
-        setColumn(i, column);
+    switch (direction) {
+    case Direction::up:
+        for (size_t i = 0; i < this->FieldSize; ++i) {
+            column = getColumn(i);
+            column.process();
+            setColumn(i, column);
+        }
+        break;
+    case Direction::down:
+        for (size_t i = 0; i < this->FieldSize; ++i) {
+            column = getColumn(i); 
+            std::reverse(column.begin(), column.end());
+            column.process();
+            std::reverse(column.begin(), column.end());
+            setColumn(i, column);
+        }
+        break;
+    case Direction::left:
+        for (size_t i = 0; i < this->FieldSize; ++i) {
+            row = getRow(i);
+            row.process();
+            setRow(i, row);
+        }
+    case Direction::right:
+        for (size_t i = 0; i < this->FieldSize; ++i) {
+            row = getRow(i);
+            std::reverse(row.begin(), row.end());
+            row.process();
+            std::reverse(row.begin(), row.end());
+            setRow(i, row);
+        }
+    default:
+        throw std::exception();
     }
     return this->field != oldField; 
 }
-
-bool Field::moveLeft() {
-    auto oldField = this->field;
-    Line row;
-    for (size_t i = 0; i < this->FieldSize; ++i) {
-        row = getRow(i);
-        row.process();
-        setRow(i, row);
-    }
-    return this->field != oldField;
-}
-
-bool Field::moveRight() {
-    auto oldField = this->field;
-    Line row;
-    for (size_t i = 0; i < this->FieldSize; ++i) {
-        row = getRow(i);
-        std::reverse(row.begin(), row.end());
-        row.process();
-        std::reverse(row.begin(), row.end());
-        setRow(i, row);
-    }
-    return this->field != oldField;
-}
-
 
 std::vector<Position> Field::getEmptyTiles() const {
     std::vector<Position> empty;

@@ -3,6 +3,7 @@
 #include <algorithm>
 #include "field.h"
 
+
 using Tile = unsigned long long int;
 
 int main() {
@@ -15,19 +16,19 @@ int main() {
         switch (action)
         {
         case 'w':
-            field.moveUp();
+            field.move(Direction::up);
             field.spawnTile(field.getEmptyTiles());
             break;
         case 's':
-            field.moveDown();
+            field.move(Direction::down);
             field.spawnTile(field.getEmptyTiles());
             break;
         case 'a':
-            field.moveLeft();
+            field.move(Direction::left);
             field.spawnTile(field.getEmptyTiles());
             break;
         case 'd':
-            field.moveRight();
+            field.move(Direction::right);
             field.spawnTile(field.getEmptyTiles());
             break;
         default:

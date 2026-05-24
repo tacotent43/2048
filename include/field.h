@@ -19,8 +19,8 @@ private:
     size_t FieldSize = 4;
     std::vector<Line> field;
 
-    Line& getRow(size_t rowIndex) const;
-    Line& getColumn(size_t columnIndex) const;
+    Line getRow(size_t rowIndex) const;
+    Line getColumn(size_t columnIndex) const;
     void setRow(size_t rowIndex, const Line &line);
     void setColumn(size_t columnIndex, const Line &line);
 
@@ -31,10 +31,7 @@ public:
     Field(size_t fieldSize);
 
     bool canMove() const;
-    bool moveUp();
-    bool moveDown();
-    bool moveLeft();
-    bool moveRight();
+    bool move(Direction direction);
 
     std::vector<Position> getEmptyTiles() const;
     bool spawnTile(const std::vector<Position> &empty);

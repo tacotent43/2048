@@ -8,12 +8,12 @@ Fields:
 
 Line::Line() {
     this->line.clear();
-    this->line.reserve(4);
+    this->line.resize(4);
 }
 
 Line::Line(size_t length) {
     this->line.clear();
-    this->line.reserve(length);
+    this->line.resize(length);
 }
 
 void Line::process() {

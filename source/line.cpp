@@ -1,11 +1,5 @@
 #include "line.h"
 
-/*
-Fields:
-    std::vector<Tile> line;
-    Score score;
-*/
-
 Line::Line() {
     this->line.clear();
     this->line.resize(0);

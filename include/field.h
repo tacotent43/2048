@@ -1,6 +1,5 @@
 #pragma once
 
-#include "tilePosition.h"
 #include "line.h"
 #include "types.h"
 
@@ -30,6 +29,9 @@ private:
 public:
     Field(size_t fieldSize);
 
+    void updateScore();
+    Score getScore();
+    
     bool canMove() const;
     bool move(Direction direction);
 

@@ -1,21 +1,5 @@
 #include "field.h"
 
-/*
-Fields:
-    std::vector<std::vector<int>> field;
-
-Private methods: 
-    std::vector<Tile> processLine(const std::vector<Tile> &sourceLine);
-
-    std::vector<Tile> getRow(size_t idx);
-    std::vector<Tile> getColumn(size_t idx);
-    void setRow(size_t idx);
-    void setColumn(size_t idx);
-
-Public methods: 
-    bool move(Direction direction);
-*/
-
 // PRIVATE
 Line Field::getRow(size_t rowIndex) const {
     return this->field[rowIndex];
@@ -53,11 +37,27 @@ Field::Field(size_t fieldSize) : mt(std::random_device{}()), FieldSize(fieldSize
     this->reset();
 }
 
-void printVector(const Line &arr) {
-    for (size_t i = 0; i < arr.size(); ++i) {
-        printf("%llu ", arr[i]);
+void Field::updateScore() {
+    for (size_t i = 0; i < this->FieldSize; ++i) {
+        this->score += this->field[i].score;
     }
-    printf("\n");
+}
+
+Score Field::getScore() {
+    return this->score;
+}
+
+bool Field::canMove() const {
+    if (!this->getEmptyTiles().empty()) {
+        return true;
+    }
+
+    for (int x = 0; x < this->field.size(); ++x) {
+        for (int y = 0; y < this->field.size(); ++y) {
+            // TODO: implement
+            // if (x + 1 < )
+        }
+    }
 }
 
 bool Field::move(Direction direction) {
@@ -136,4 +136,5 @@ void Field::debug() const {
         }
         printf("\n");
     }
+    printf("Current score: %llu", this->score);
 }

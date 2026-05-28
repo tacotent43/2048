@@ -14,24 +14,24 @@ int main() {
     field.spawnTile(field.getEmptyTiles());
     field.spawnTile(field.getEmptyTiles());
 
-    while (canMove) {
+    while (field.hasMoves()) {
         field.debug();
         std::cin >> action;
         switch (action) {
         case 'w':
-            canMove = field.move(Direction::up);
+            field.move(Direction::up);
             field.spawnTile(field.getEmptyTiles());
             break;
         case 's':
-            canMove = field.move(Direction::down);
+            field.move(Direction::down);
             field.spawnTile(field.getEmptyTiles());
             break;
         case 'a':
-            canMove = field.move(Direction::left);
+            field.move(Direction::left);
             field.spawnTile(field.getEmptyTiles());
             break;
         case 'd':
-            canMove = field.move(Direction::right);
+            field.move(Direction::right);
             field.spawnTile(field.getEmptyTiles());
             break;
         default:

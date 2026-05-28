@@ -1,14 +1,8 @@
 #include "line.h"
 
-Line::Line() {
-    this->line.clear();
-    this->line.resize(0);
-}
+Line::Line() = default;
 
-Line::Line(size_t length) {
-    this->line.clear();
-    this->line.resize(length);
-}
+Line::Line(size_t length) : line(length) {}
 
 void Line::process() {
     std::vector<Tile> result;

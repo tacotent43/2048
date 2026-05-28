@@ -39,7 +39,7 @@ Field::Field(size_t fieldSize) : mt(std::random_device{}()), FieldSize(fieldSize
 
 void Field::updateScore() {
     for (size_t i = 0; i < this->FieldSize; ++i) {
-        this->score += this->field[i].score;
+        this->score = this->field[i].score;
     }
 }
 
@@ -47,17 +47,20 @@ Score Field::getScore() {
     return this->score;
 }
 
-bool Field::canMove() const {
+bool Field::hasMoves() const {
     if (!this->getEmptyTiles().empty()) {
         return true;
     }
 
-    for (int x = 0; x < this->field.size(); ++x) {
-        for (int y = 0; y < this->field.size(); ++y) {
-            // TODO: implement
-            // if (x + 1 < )
+    for (size_t x = 0; x < this->field.size(); ++x) {
+        for (size_t y = 0; y < this->field.size(); ++y) {
+            if (this->field[x][y] == this->field[x + 1][y] || 
+                this->field[x][y] == this->field[x][y + 1] ) {
+                return true;
+            }
         }
     }
+    return false;
 }
 
 bool Field::move(Direction direction) {
@@ -132,7 +135,7 @@ bool Field::spawnTile(const std::vector<Position> &empty) {
 void Field::debug() const {
     for (size_t i = 0; i < this->FieldSize; ++i) {
         for (size_t j = 0; j < this->FieldSize; ++j) {
-            printf("%5llu ", this->field[i][j]);
+            printf("%3llu ", this->field[i][j]);
         }
         printf("\n");
     }

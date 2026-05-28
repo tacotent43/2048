@@ -32,7 +32,7 @@ public:
     void updateScore();
     Score getScore();
     
-    bool canMove() const;
+    bool hasMoves() const;
     bool move(Direction direction);
 
     std::vector<Position> getEmptyTiles() const;

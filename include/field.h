@@ -1,7 +1,7 @@
 #pragma once
 
 #include "line.h"
-#include "types.h"
+#include "types.hpp"
 
 #include <stdio.h>
 #include <vector>

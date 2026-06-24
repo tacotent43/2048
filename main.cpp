@@ -5,11 +5,16 @@
 
 using Tile = unsigned long long int;
 
-void printVecOfPos(const std::vector<Position> &positions) {
-    for (const auto &pos : positions) {
-        std::cout << pos.x << ' ' << pos.y << '\n';
+// [debug]
+void printVecOfPos(const std::vector<Position> &positions, int fieldSize) {
+    for (int i = 0; i < fieldSize; ++i) {
+        for (int j = 0; j < fieldSize; ++j) {
+            std::cout << (std::find(positions.begin(), positions.end(), Position(i, j)) != positions.end() ? 1 : 0) << ' ';
+        }
+        std::cout << '\n';
     }
 }
+// [debug]
 
 int main() {
     Field field(4);

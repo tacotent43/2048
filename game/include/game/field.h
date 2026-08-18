@@ -1,6 +1,6 @@
 #pragma once
 
-#include "line.h"
+#include <game/line.h>
 #include "types.hpp"
 
 #include <stdio.h>

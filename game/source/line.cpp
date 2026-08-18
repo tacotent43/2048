@@ -1,4 +1,4 @@
-#include "line.h"
+#include <game/line.h>
 
 Line::Line() = default;
 

@@ -1,32 +1,20 @@
-cmake_minimum_required(VERSION 3.25.1)
-project(game)
+cmake_minimum_required(VERSION 3.20)
+project(2048_sdl)
+
+set(CMAKE_CXX_STANDARD 17)
 
 include(FetchContent)
 
-FetchContent_Declare(SFML
-  GIT_REPOSITORY https://github.com/SFML/SFML.git
-  GIT_TAG 3.0.x)
-FetchContent_MakeAvailable(SFML)
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "-g -Wall -Wextra -Werror -pedantic -fsanitize=address")
-# set(CMAKE_CXX_FLAGS "-g -Wall -pedantic")
-
-file(GLOB SRC source/*.cpp)
-# file(GLOB THIRD thirdpart/*.hpp)
-
-add_executable(game 
-  ${SRC}
-#   ${THIRD}
-  main.cpp
+FetchContent_Declare(
+    SDL3
+    GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+    GIT_TAG release-3.4.10
 )
+FetchContent_MakeAvailable(SDL3)
 
-include_directories(
-  ./include/
-#   ./thirdpart/
-)
+include_directories(${CMAKE_SOURCE_DIR})
 
-target_link_libraries(game PRIVATE 
-  sfml-graphics
-)
+add_subdirectory(game)
+
+add_executable(2048_sdl main.cpp)
+target_link_libraries(2048_sdl PRIVATE game SDL3::SDL3)

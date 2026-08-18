@@ -1,4 +1,4 @@
-#include "field.h"
+#include <game/field.h>
 
 // PRIVATE
 Line Field::getRow(size_t rowIndex) const {

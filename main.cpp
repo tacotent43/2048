@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include "field.h"
+#include <game/field.h>
 
 using Tile = unsigned long long int;
 
@@ -30,26 +30,18 @@ int main() {
         switch (action) {
         case 'w':
             field.move(Direction::up);
-            printf("EMPTY POSITIONS");
-            printVecOfPos(field.getEmptyTiles());
             field.spawnTile(field.getEmptyTiles());
             break;
         case 's':
             field.move(Direction::down);
-            printf("EMPTY POSITIONS");
-            printVecOfPos(field.getEmptyTiles());
             field.spawnTile(field.getEmptyTiles());
             break;
         case 'a':
             field.move(Direction::left);
-            printf("EMPTY POSITIONS");
-            printVecOfPos(field.getEmptyTiles());
             field.spawnTile(field.getEmptyTiles());
             break;
         case 'd':
             field.move(Direction::right);
-            printf("EMPTY POSITIONS");
-            printVecOfPos(field.getEmptyTiles());
             field.spawnTile(field.getEmptyTiles());
             break;
         default:

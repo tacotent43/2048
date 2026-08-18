@@ -1,4 +1,6 @@
-#include "types.hpp"
+#pragma once
+
+#include <game/types.hpp>
 
 #include <vector>
 

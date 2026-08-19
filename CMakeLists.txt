@@ -15,6 +15,7 @@ FetchContent_MakeAvailable(SDL3)
 include_directories(${CMAKE_SOURCE_DIR})
 
 add_subdirectory(game)
+add_subdirectory(sdl)
 
 add_executable(2048_sdl main.cpp)
-target_link_libraries(2048_sdl PRIVATE game SDL3::SDL3)
+target_link_libraries(2048_sdl PRIVATE game sdl SDL3::SDL3)

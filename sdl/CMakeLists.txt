@@ -11,6 +11,8 @@ add_library(
 target_link_libraries(
     sdl PUBLIC 
     SDL3::SDL3
+    SDL3_ttf::SDL3_ttf
+    game
 )
 
 target_include_directories(

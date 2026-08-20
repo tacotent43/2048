@@ -35,6 +35,8 @@ public:
     bool hasMoves() const;
     bool move(Direction direction);
 
+    std::vector<Line> getField() const;
+
     std::vector<Position> getEmptyTiles() const;
     bool spawnTile(const std::vector<Position> &empty);
 

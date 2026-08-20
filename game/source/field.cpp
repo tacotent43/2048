@@ -131,6 +131,10 @@ bool Field::spawnTile(const std::vector<Position> &empty) {
     return false;
 }
 
+std::vector<Line> Field::getField() const {
+    return this->field;
+}
+
 
 void Field::debug() const {
     for (size_t i = 0; i < this->FieldSize; ++i) {

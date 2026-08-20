@@ -12,10 +12,17 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(SDL3)
 
+FetchContent_Declare(
+    SDL3_ttf
+    GIT_REPOSITORY https://github.com/libsdl-org/SDL_ttf.git
+    GIT_TAG release-3.2.2
+)
+FetchContent_MakeAvailable(SDL3_ttf)
+
 include_directories(${CMAKE_SOURCE_DIR})
 
 add_subdirectory(game)
 add_subdirectory(sdl)
 
 add_executable(2048_sdl main.cpp)
-target_link_libraries(2048_sdl PRIVATE game sdl SDL3::SDL3)
+target_link_libraries(2048_sdl PRIVATE game sdl SDL3::SDL3 SDL3_ttf::SDL3_ttf)

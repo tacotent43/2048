@@ -8,7 +8,7 @@ void GameWindow::quit() {
     SDL_Quit();
 }
 
-FPosition GameWindow::drawTile(unsigned long long int number, int x, int y) {
+void GameWindow::drawTile(unsigned long long int number, int x, int y) {
     std::string text = std::to_string(number);
 
     SDL_Surface *surface = TTF_RenderText_Blended(
@@ -20,18 +20,19 @@ FPosition GameWindow::drawTile(unsigned long long int number, int x, int y) {
     float tHeight = 0;
 
     SDL_GetTextureSize(texture, &tWidth, &tHeight);
-    SDL_FRect dst = {x, y, tWidth, tHeight};
+    SDL_FRect dst = {static_cast<float>(x) - tWidth / 2.0f, static_cast<float>(y) - tHeight / 2.0f, tWidth, tHeight};
 
     SDL_RenderTexture(renderer, texture, NULL, &dst);
 
     SDL_DestroyTexture(texture);
     SDL_DestroySurface(surface);
-
-    return FPosition(tWidth, tHeight);
 }
 
 void GameWindow::drawField(const std::vector<Line> &field) {
-    std::vector<std::vector<FPosition>> centerPoints{this->gameFieldSize, std::vector<FPosition>{this->gameFieldSize}};
+    std::vector<std::vector<FPosition>> centerPoints {
+        static_cast<size_t>(this->gameFieldSize), 
+        std::vector<FPosition>{static_cast<size_t>(this->gameFieldSize)}
+    };
 
     for (int i = 0; i < this->gameFieldSize; ++i) {
         for (int j = 0; j < this->gameFieldSize; ++j) {
@@ -109,7 +110,8 @@ SDL_AppResult GameWindow::initialize() {
         return SDL_APP_FAILURE;
     }
 
-    this->font = TTF_OpenFont("fonts/JetBrainsMono-Thin.ttf", 96);
+    const char* currentPath = SDL_GetBasePath();
+    this->font = TTF_OpenFont((std::string(currentPath) + "../fonts/JetBrainsMono-Thin.ttf").c_str(), 96);
     if (!font) {
         SDL_Log("Font load error: %s", SDL_GetError());
         return SDL_APP_FAILURE;

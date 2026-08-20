@@ -23,7 +23,7 @@ class GameWindow {
 
     void quit();
 
-    FPosition drawTile(unsigned long long int number, int w, int h);
+    void drawTile(unsigned long long int number, int w, int h);
     void drawField(const std::vector<Line> &field);
     void drawGrid();
 

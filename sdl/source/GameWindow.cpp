@@ -8,21 +8,63 @@ void GameWindow::quit() {
     SDL_Quit();
 }
 
-void GameWindow::drawTile(unsigned long long int number, int x, int y) {
-    std::string text = std::to_string(number);
+void GameWindow::drawScore() {
+    std::string scoreText = "score: ";
+    std::string score = std::to_string(this->field.getScore());
+
+    float previousFontSize = TTF_GetFontSize(this->font);
+    TTF_SetFontSize(this->font, 24);
+
+    float xOffset = 0.05 * this->WindowWidth;
+    float yOffset = 0.05 * this->WindowHeight;
+
+    float tWidthText = 0;
+    float tHeightText = 0;
 
     SDL_Surface *surface = TTF_RenderText_Blended(
-        font, text.c_str(), text.size(), SDL_Color({225, 225, 225})
+        this->font, scoreText.c_str(), scoreText.size(), SDL_Color({255, 255, 255})
     );
     SDL_Texture *texture = SDL_CreateTextureFromSurface(this->renderer, surface);
+
+    SDL_GetTextureSize(texture, &tWidthText, &tHeightText);
+    SDL_FRect dst = {xOffset, yOffset, tWidthText, tHeightText};
+
+    SDL_RenderTexture(this->renderer, texture, NULL, &dst);
+
+    float tWidthScore = 0;
+    float tHeightScore = 0;
+
+    surface = TTF_RenderText_Blended(
+        this->font, score.c_str(), score.size(), SDL_Color({255, 123, 23})
+    );
+    texture = SDL_CreateTextureFromSurface(this->renderer, surface);
+
+    SDL_GetTextureSize(texture, &tWidthScore, &tHeightScore);
+    dst = {xOffset + tWidthText, yOffset, tWidthScore, tHeightScore};
+
+    SDL_RenderTexture(this->renderer, texture, NULL, &dst);
+
+    SDL_DestroyTexture(texture);
+    SDL_DestroySurface(surface);
+
+    TTF_SetFontSize(this->font, previousFontSize);
+}
+
+void GameWindow::drawTile(unsigned long long int number, int x, int y) {
+    std::string text = std::to_string(number);
 
     float tWidth = 0; 
     float tHeight = 0;
 
+    SDL_Surface *surface = TTF_RenderText_Blended(
+        this->font, text.c_str(), text.size(), SDL_Color({225, 225, 225})
+    );
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(this->renderer, surface);
+
     SDL_GetTextureSize(texture, &tWidth, &tHeight);
     SDL_FRect dst = {static_cast<float>(x) - tWidth / 2.0f, static_cast<float>(y) - tHeight / 2.0f, tWidth, tHeight};
 
-    SDL_RenderTexture(renderer, texture, NULL, &dst);
+    SDL_RenderTexture(this->renderer, texture, NULL, &dst);
 
     SDL_DestroyTexture(texture);
     SDL_DestroySurface(surface);
@@ -36,8 +78,8 @@ void GameWindow::drawField(const std::vector<Line> &field) {
 
     for (int i = 0; i < this->gameFieldSize; ++i) {
         for (int j = 0; j < this->gameFieldSize; ++j) {
-            centerPoints[i - 0][j - 0].x = this->WindowWidth * (0.125f + 0.09375f + 0.1875 * i);
-            centerPoints[i - 0][j - 0].y = this->WindowHeight * (0.125f + 0.09375f + 0.1875 * j);
+            centerPoints[i - 0][j - 0].x = this->WindowWidth * (0.125f + 0.09375f + 0.1875 * j);
+            centerPoints[i - 0][j - 0].y = this->WindowHeight * (0.125f + 0.09375f + 0.1875 * i);
         }
     }
 
@@ -133,6 +175,26 @@ SDL_AppResult GameWindow::event(SDL_Event *event) {
     if (event->type == SDL_EVENT_QUIT) {
         return SDL_APP_SUCCESS;
     }
+
+    switch (event->type) {
+        case SDL_EVENT_KEY_DOWN:
+            switch (event->key.key) {
+                case SDLK_W:
+                    this->makeMove(Direction::up);
+                    break;
+                case SDLK_S:
+                    this->makeMove(Direction::down);
+                    break;
+                case SDLK_A:
+                    this->makeMove(Direction::left);
+                    break;
+                case SDLK_D:
+                    this->makeMove(Direction::right);
+                    break;
+            }
+            break;
+    }
+
     return SDL_APP_CONTINUE;
 }
 
@@ -144,6 +206,7 @@ SDL_AppResult GameWindow::iterate() {
         0, 0, 0, 255
     );
 
+    this->drawScore();
     this->drawGrid();
     this->drawField(this->field.getField());
     
@@ -156,3 +219,8 @@ SDL_AppResult GameWindow::iterate() {
     return SDL_APP_CONTINUE;
 }
 
+void GameWindow::makeMove(Direction direction) {
+    field.move(direction);
+    field.spawnTile(field.getEmptyTiles());
+    field.updateScore();
+}

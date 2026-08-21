@@ -23,6 +23,7 @@ class GameWindow {
 
     void quit();
 
+    void drawScore();
     void drawTile(unsigned long long int number, int w, int h);
     void drawField(const std::vector<Line> &field);
     void drawGrid();
@@ -36,6 +37,8 @@ public:
     SDL_AppResult initialize();
     SDL_AppResult event(SDL_Event *event);
     SDL_AppResult iterate();
+
+    void makeMove(Direction direction);
 
     ~GameWindow() {
         quit();

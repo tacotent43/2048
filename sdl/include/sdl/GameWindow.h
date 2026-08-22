@@ -11,9 +11,10 @@
 #include <sdl/FPosition.hpp>
 
 class GameWindow {
-    int gameFieldSize = 4;
-    std::string fontString = "Consolas.ttf";
+    size_t gameFieldSize = 5;
+    std::string fontString = "JetBrainsMono-Thin.ttf";
     TTF_Font *font = nullptr;
+    float fontSize = 0;
 
     int WindowWidth = 800;
     int WindowHeight = 800;
@@ -21,6 +22,7 @@ class GameWindow {
     const float borderOffset = 0.125f;
     const float borderLength = 0.75f;
     float lineOffset = 0.0f;
+    int cellSize_px = 0.0f;
 
     SDL_Window *window = nullptr;
     SDL_Renderer *renderer = nullptr;
@@ -33,6 +35,7 @@ class GameWindow {
     void drawGrid();
 
     Field field{4};
+    void initializeField(size_t fieldSize);
 
 public:
     GameWindow() {}

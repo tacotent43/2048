@@ -4,6 +4,7 @@
 void GameWindow::quit() {
     SDL_DestroyRenderer(this->renderer);
     SDL_DestroyWindow(this->window);
+    TTF_CloseFont(this->font);
     TTF_Quit();
     SDL_Quit();
 }
@@ -31,6 +32,9 @@ void GameWindow::drawScore() {
 
     SDL_RenderTexture(this->renderer, texture, NULL, &dst);
 
+    SDL_DestroyTexture(texture);
+    SDL_DestroySurface(surface);
+
     float tWidthScore = 0;
     float tHeightScore = 0;
 
@@ -51,23 +55,30 @@ void GameWindow::drawScore() {
 }
 
 void GameWindow::drawTile(unsigned long long int number, int x, int y) {
-    std::string text = std::to_string(number);
+    if (number != 0) {
+        std::string text = std::to_string(number);
 
-    float tWidth = 0; 
-    float tHeight = 0;
+        float tWidth = 0; 
+        float tHeight = 0;
 
-    SDL_Surface *surface = TTF_RenderText_Blended(
-        this->font, text.c_str(), text.size(), SDL_Color({225, 225, 225})
-    );
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(this->renderer, surface);
+        float prevFontSize = this->fontSize;
+        TTF_SetFontSize(this->font, this->fontSize * (1 - 0.15f * text.size()));
 
-    SDL_GetTextureSize(texture, &tWidth, &tHeight);
-    SDL_FRect dst = {static_cast<float>(x) - tWidth / 2.0f, static_cast<float>(y) - tHeight / 2.0f, tWidth, tHeight};
+        SDL_Surface *surface = TTF_RenderText_Blended(
+            this->font, text.c_str(), text.size(), SDL_Color({225, 225, 225})
+        );
+        SDL_Texture *texture = SDL_CreateTextureFromSurface(this->renderer, surface);
 
-    SDL_RenderTexture(this->renderer, texture, NULL, &dst);
+        SDL_GetTextureSize(texture, &tWidth, &tHeight);
+        SDL_FRect dst = {static_cast<float>(x) - tWidth / 2.0f, static_cast<float>(y) - tHeight / 2.0f, tWidth, tHeight};
 
-    SDL_DestroyTexture(texture);
-    SDL_DestroySurface(surface);
+        SDL_RenderTexture(this->renderer, texture, NULL, &dst);
+
+        this->fontSize = prevFontSize;
+
+        SDL_DestroyTexture(texture);
+        SDL_DestroySurface(surface);
+    }
 }
 
 void GameWindow::drawField(const std::vector<Line> &field) {
@@ -129,6 +140,15 @@ void GameWindow::drawGrid() {
     }
 }
 
+void GameWindow::initializeField(size_t fieldSize) {
+    this->cellSize_px = (this->WindowWidth - this->borderOffset * 2) / this->gameFieldSize;
+    this->fontSize = static_cast<float>(cellSize_px) * 0.7f;
+
+    this->field = Field(this->gameFieldSize);
+    field.spawnTile(field.getEmptyTiles());
+    field.spawnTile(field.getEmptyTiles());
+}
+
 // public
 SDL_AppResult GameWindow::initialize() {
     SDL_SetAppMetadata("2048 game", "0.1", "");
@@ -148,8 +168,10 @@ SDL_AppResult GameWindow::initialize() {
         return SDL_APP_FAILURE;
     }
 
+    this->initializeField(this->gameFieldSize);
+
     const char* currentPath = SDL_GetBasePath();
-    this->font = TTF_OpenFont((std::string(currentPath) + "../fonts/JetBrainsMono-Thin.ttf").c_str(), 96);
+    this->font = TTF_OpenFont((std::string(currentPath) + "../fonts/JetBrainsMono-Thin.ttf").c_str(), this->fontSize);
     if (!font) {
         SDL_Log("Font load error: %s", SDL_GetError());
         return SDL_APP_FAILURE;
@@ -162,9 +184,6 @@ SDL_AppResult GameWindow::initialize() {
         this->WindowWidth, this->WindowHeight,
         SDL_LOGICAL_PRESENTATION_LETTERBOX
     );
-
-    this->field = Field(this->gameFieldSize);
-    field.spawnTile(field.getEmptyTiles());
 
     return SDL_APP_CONTINUE;
 }
@@ -189,6 +208,22 @@ SDL_AppResult GameWindow::event(SDL_Event *event) {
                 case SDLK_D:
                     this->makeMove(Direction::right);
                     break;
+
+                case SDLK_UP:
+                    this->makeMove(Direction::up);
+                    break;
+                case SDLK_DOWN:
+                    this->makeMove(Direction::down);
+                    break;
+                case SDLK_LEFT:
+                    this->makeMove(Direction::left);
+                    break;
+                case SDLK_RIGHT:
+                    this->makeMove(Direction::right);
+                    break;
+                
+                case SDLK_R:
+                    this->initializeField(this->gameFieldSize);
             }
             break;
     }
@@ -207,7 +242,7 @@ SDL_AppResult GameWindow::iterate() {
     this->drawScore();
     this->drawGrid();
     this->drawField(this->field.getField());
-    
+
     SDL_SetRenderDrawColor(
         this->renderer,
         0, 0, 0, 255

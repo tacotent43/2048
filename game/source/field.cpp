@@ -38,9 +38,11 @@ Field::Field(size_t fieldSize) : mt(std::random_device{}()), FieldSize(fieldSize
 }
 
 void Field::updateScore() {
+    Score currentScore = 0;
     for (size_t i = 0; i < this->FieldSize; ++i) {
-        this->score = this->field[i].score;
+        currentScore += this->field[i].score;
     }
+    this->score = currentScore;
 }
 
 Score Field::getScore() {

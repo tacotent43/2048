@@ -15,8 +15,12 @@ class GameWindow {
     std::string fontString = "Consolas.ttf";
     TTF_Font *font = nullptr;
 
-    int WindowWidth = 640;
-    int WindowHeight = 640;
+    int WindowWidth = 800;
+    int WindowHeight = 800;
+
+    const float borderOffset = 0.125f;
+    const float borderLength = 0.75f;
+    float lineOffset = 0.0f;
 
     SDL_Window *window = nullptr;
     SDL_Renderer *renderer = nullptr;

@@ -78,8 +78,8 @@ void GameWindow::drawField(const std::vector<Line> &field) {
 
     for (int i = 0; i < this->gameFieldSize; ++i) {
         for (int j = 0; j < this->gameFieldSize; ++j) {
-            centerPoints[i - 0][j - 0].x = this->WindowWidth * (0.125f + 0.09375f + 0.1875 * j);
-            centerPoints[i - 0][j - 0].y = this->WindowHeight * (0.125f + 0.09375f + 0.1875 * i);
+            centerPoints[i - 0][j - 0].x = this->WindowWidth * (this->borderOffset + (this->lineOffset / 2.f) + this->lineOffset * j);
+            centerPoints[i - 0][j - 0].y = this->WindowHeight * (this->borderOffset + (this->lineOffset / 2.f) + this->lineOffset * i);
         }
     }
 
@@ -96,10 +96,6 @@ void GameWindow::drawField(const std::vector<Line> &field) {
 }
 
 void GameWindow::drawGrid() {
-    const float borderOffset = 0.125f;
-    const float borderLength = 0.75f;
-    const float lineOffset   = 0.1875f; // hard-coded value
-
     SDL_FRect outline;
 
     outline.x = outline.y = this->WindowWidth * borderOffset;
@@ -158,6 +154,8 @@ SDL_AppResult GameWindow::initialize() {
         SDL_Log("Font load error: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
+
+    this->lineOffset = this->borderLength / this->gameFieldSize;
 
     SDL_SetRenderLogicalPresentation(
         this->renderer,

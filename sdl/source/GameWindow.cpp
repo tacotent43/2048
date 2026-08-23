@@ -9,6 +9,58 @@ void GameWindow::quit() {
     SDL_Quit();
 }
 
+void GameWindow::drawTips() {
+    const float xOffset = 0.125f;
+    float yOffset = 0.0f;
+    
+    std::vector<std::string> logo = {
+        "   ___   ____  __ __  ____                              ", 
+        "  |__ \\ / __ \\/ // / ( __ )   ____ _____ _____ ___  ___ ",
+        "  __/ // / / / // /_/ __  |  / __ `/ __ `/ __ `__ \\/ _ \\",
+        " / __// /_/ /__  __/ /_/ /  / /_/ / /_/ / / / / / /  __/", 
+        "/____/\\____/  /_/  \\____/   \\__, /\\__,_/_/ /_/ /_/\\___/ ",
+        "                           /____/                       ",
+    };
+
+    std::vector<std::string> tips = {
+        "- 'W' / 'A' / 'S' / 'D' and arrow keys - movement",
+        "- Press 'R' to restart the game", 
+        "- Press 'P' to enter preferences"
+    };
+
+    float previousFontSize = TTF_GetFontSize(this->font);
+    TTF_SetFontSize(this->font, 0.03f * this->WindowHeight);
+
+    float tWidth = 0;
+    float tHeight = 0;
+
+    float linePositionOffset = 0;
+
+    for (const std::string &line : logo) {
+        SDL_Surface *surface = TTF_RenderText_Blended(
+            this->font, line.c_str(), line.size(), SDL_Color({255, 0, 0, 255})
+        );
+
+        SDL_Texture *texture = SDL_CreateTextureFromSurface(this->renderer, surface);
+
+        SDL_GetTextureSize(texture, &tWidth, &tHeight);
+        SDL_FRect dst = {
+            (static_cast<float>(this->WindowWidth) - tWidth) / 2.0f,
+            linePositionOffset,
+            tWidth, tHeight
+        };
+
+        linePositionOffset += tHeight;
+
+        SDL_RenderTexture(this->renderer, texture, NULL, &dst);
+
+        SDL_DestroyTexture(texture);
+        SDL_DestroySurface(surface);
+    }
+    
+    TTF_SetFontSize(this->font, previousFontSize);
+}
+
 void GameWindow::drawScore() {
     std::string scoreText = "score: ";
     std::string score = std::to_string(this->field.getScore());
@@ -87,8 +139,8 @@ void GameWindow::drawField(const std::vector<Line> &field) {
         std::vector<FPosition>{static_cast<size_t>(this->gameFieldSize)}
     };
 
-    for (int i = 0; i < this->gameFieldSize; ++i) {
-        for (int j = 0; j < this->gameFieldSize; ++j) {
+    for (size_t i = 0; i < this->gameFieldSize; ++i) {
+        for (size_t j = 0; j < this->gameFieldSize; ++j) {
             centerPoints[i - 0][j - 0].x = this->WindowWidth * (this->borderOffset + (this->lineOffset / 2.f) + this->lineOffset * j);
             centerPoints[i - 0][j - 0].y = this->WindowHeight * (this->borderOffset + (this->lineOffset / 2.f) + this->lineOffset * i);
         }
@@ -99,8 +151,8 @@ void GameWindow::drawField(const std::vector<Line> &field) {
         255, 255, 255, 255
     );
 
-    for (int i = 0; i < field.size(); ++i) {
-        for (int j = 0; j < field[i].size(); ++j) {
+    for (size_t i = 0; i < field.size(); ++i) {
+        for (size_t j = 0; j < field[i].size(); ++j) {
             this->drawTile(field[i][j], centerPoints[i][j].x, centerPoints[i][j].y);
         }
     }
@@ -119,7 +171,7 @@ void GameWindow::drawGrid() {
 
     SDL_RenderRect(this->renderer, &outline);
 
-    for (int i = 0; i < this->gameFieldSize; ++i) {
+    for (size_t i = 0; i < this->gameFieldSize; ++i) {
         SDL_RenderLine(
             this->renderer, 
             this->WindowWidth * (borderOffset + lineOffset * i),
@@ -129,7 +181,7 @@ void GameWindow::drawGrid() {
         );
     }
 
-    for (int i = 0; i < this->gameFieldSize; ++i) {
+    for (size_t i = 0; i < this->gameFieldSize; ++i) {
         SDL_RenderLine(
             this->renderer, 
             this->WindowHeight * borderOffset,
@@ -239,9 +291,13 @@ SDL_AppResult GameWindow::iterate() {
         0, 0, 0, 255
     );
 
-    this->drawScore();
-    this->drawGrid();
-    this->drawField(this->field.getField());
+    if (this->showTips) {
+        this->drawTips();
+    } else {
+        this->drawScore();
+        this->drawGrid();
+        this->drawField(this->field.getField());
+    }
 
     SDL_SetRenderDrawColor(
         this->renderer,

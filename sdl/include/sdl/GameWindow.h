@@ -29,17 +29,21 @@ class GameWindow {
 
     void quit();
 
+    void drawTips();
+    
     void drawScore();
     void drawTile(unsigned long long int number, int w, int h);
     void drawField(const std::vector<Line> &field);
     void drawGrid();
-
+    
     Field field{4};
     void initializeField(size_t fieldSize);
-
+    
 public:
     GameWindow() {}
     explicit GameWindow(int screenWidth) : WindowWidth(screenWidth), WindowHeight(screenWidth) {}
+    
+    bool showTips = false;
 
     SDL_AppResult initialize();
     SDL_AppResult event(SDL_Event *event);

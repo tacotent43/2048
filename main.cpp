@@ -20,6 +20,11 @@ int main() {
                 running = false;
             }
         }
+
+        const bool* keyState = SDL_GetKeyboardState(NULL);
+
+        window.showTips = keyState[SDL_SCANCODE_I];
+
         window.iterate();
     }
 

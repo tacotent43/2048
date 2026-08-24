@@ -14,7 +14,6 @@ struct Line {
     void process();
 
     void push_back(Tile tile);
-    size_t size();
     size_t size() const;
 
     Tile& operator[](size_t index);

@@ -45,10 +45,6 @@ void Line::push_back(Tile tile) {
     this->line.push_back(tile);
 }
 
-size_t Line::size() {
-    return this->line.size();
-}
-
 size_t Line::size() const {
     return this->line.size();
 }

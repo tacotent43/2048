@@ -11,24 +11,23 @@ void GameWindow::quit() {
 
 void GameWindow::drawTips() {
     std::vector<std::string> logo = {
-        "   ___   ____  __ __  ____                              ", 
-        "  |__ \\ / __ \\/ // / ( __ )   ____ _____ _____ ___  ___ ",
-        "  __/ // / / / // /_/ __  |  / __ `/ __ `/ __ `__ \\/ _ \\",
-        " / __// /_/ /__  __/ /_/ /  / /_/ / /_/ / / / / / /  __/", 
-        "/____/\\____/  /_/  \\____/   \\__, /\\__,_/_/ /_/ /_/\\___/ ",
-        "                           /____/                       ",
+        "   ___   ____  __ __  ____  ", 
+        "  |__ \\ / __ \\/ // / ( __ ) ",
+        "  __/ // / / / // /_/ __  | ",
+        " / __// /_/ /__  __/ /_/ /  ", 
+        "/____/\\____/  /_/  \\____/   ",
     };
 
     std::vector<std::string> tips = {
-        "---------------------------------",
-        "[W] | [UpArrow]     - move up    ",
-        "[S] | [DownArrow]   - move down  ", 
-        "[A] | [LeftArrow]   - move left  ", 
-        "[D] | [RightArrow]  - move right ", 
-        "[R]                 - reset field",
-        "[I]                 - info       ",
-        "[P] | [ESC]         - preferences",
-        "---------------------------------"
+        "+-----------------------------------+",
+        "| [W] | [UpArrow]     - move up     |",
+        "| [S] | [DownArrow]   - move down   |",
+        "| [A] | [LeftArrow]   - move left   |",
+        "| [D] | [RightArrow]  - move right  |",
+        "| [R]                 - reset field |",
+        "| [I]                 - info        |",
+        "| [P] | [ESC]         - preferences |",
+        "+-----------------------------------+"
     };
 
     float previousFontSize = TTF_GetFontSize(this->font);
@@ -273,11 +272,17 @@ SDL_AppResult GameWindow::initialize() {
     this->initializeField(this->gameFieldSize);
 
     const char* currentPath = SDL_GetBasePath();
-    this->font = TTF_OpenFont((std::string(currentPath) + "../fonts/JetBrainsMono-Thin.ttf").c_str(), this->fontSize);
+    this->font = TTF_OpenFont((std::string(currentPath) + "../assets/fonts/JetBrainsMono-Thin.ttf").c_str(), this->fontSize);
     if (!font) {
         SDL_Log("Font load error: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
+
+    SDL_Surface *icon = SDL_LoadPNG((std::string(currentPath) + "../assets/logo.png").c_str());
+    if (!SDL_SetWindowIcon(this->window, icon)) {
+        SDL_Log("Unable to set icon at %s", (std::string(currentPath) + "../assets/logo.png").c_str());
+    }
+    SDL_DestroySurface(icon);
 
     this->lineOffset = this->borderLength / this->gameFieldSize;
 
@@ -359,7 +364,8 @@ SDL_AppResult GameWindow::iterate() {
 }
 
 void GameWindow::makeMove(Direction direction) {
-    field.move(direction);
-    field.spawnTile(field.getEmptyTiles());
+    if (field.move(direction)) {
+        field.spawnTile(field.getEmptyTiles());
+    }
     field.updateScore();
 }

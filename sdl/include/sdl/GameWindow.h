@@ -16,8 +16,8 @@ class GameWindow {
     TTF_Font *font = nullptr;
     float fontSize = 0;
 
-    int WindowWidth = 800;
-    int WindowHeight = 800;
+    float WindowWidth = 800;
+    float WindowHeight = 800;
 
     const float borderOffset = 0.125f;
     const float borderLength = 0.75f;

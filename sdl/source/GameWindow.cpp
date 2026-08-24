@@ -10,9 +10,6 @@ void GameWindow::quit() {
 }
 
 void GameWindow::drawTips() {
-    const float xOffset = 0.125f;
-    float yOffset = 0.0f;
-    
     std::vector<std::string> logo = {
         "   ___   ____  __ __  ____                              ", 
         "  |__ \\ / __ \\/ // / ( __ )   ____ _____ _____ ___  ___ ",
@@ -23,9 +20,15 @@ void GameWindow::drawTips() {
     };
 
     std::vector<std::string> tips = {
-        "- 'W' / 'A' / 'S' / 'D' and arrow keys - movement",
-        "- Press 'R' to restart the game", 
-        "- Press 'P' to enter preferences"
+        "---------------------------------",
+        "[W] | [UpArrow]     - move up    ",
+        "[S] | [DownArrow]   - move down  ", 
+        "[A] | [LeftArrow]   - move left  ", 
+        "[D] | [RightArrow]  - move right ", 
+        "[R]                 - reset field",
+        "[I]                 - info       ",
+        "[P] | [ESC]         - preferences",
+        "---------------------------------"
     };
 
     float previousFontSize = TTF_GetFontSize(this->font);
@@ -36,15 +39,18 @@ void GameWindow::drawTips() {
 
     float linePositionOffset = 0;
 
-    for (const std::string &line : logo) {
-        SDL_Surface *surface = TTF_RenderText_Blended(
-            this->font, line.c_str(), line.size(), SDL_Color({255, 0, 0, 255})
-        );
+    SDL_Surface *surface = nullptr;
+    SDL_Texture *texture = nullptr;
+    SDL_FRect dst;
 
-        SDL_Texture *texture = SDL_CreateTextureFromSurface(this->renderer, surface);
+    for (const std::string &line : logo) {
+        surface = TTF_RenderText_Blended(
+            this->font, line.c_str(), line.size(), SDL_Color({255, 0, 0})
+        );
+        texture = SDL_CreateTextureFromSurface(this->renderer, surface);
 
         SDL_GetTextureSize(texture, &tWidth, &tHeight);
-        SDL_FRect dst = {
+        dst = {
             (static_cast<float>(this->WindowWidth) - tWidth) / 2.0f,
             linePositionOffset,
             tWidth, tHeight
@@ -53,6 +59,50 @@ void GameWindow::drawTips() {
         linePositionOffset += tHeight;
 
         SDL_RenderTexture(this->renderer, texture, NULL, &dst);
+
+        SDL_DestroyTexture(texture);
+        SDL_DestroySurface(surface);
+    }
+    
+    linePositionOffset += tHeight;
+
+    // game info
+    std::string caption = "game information";
+    surface = TTF_RenderText_Blended(
+        this->font, caption.c_str(), caption.size(), SDL_Color({255, 255, 255})
+    );
+    texture = SDL_CreateTextureFromSurface(this->renderer, surface);
+
+    SDL_GetTextureSize(texture, &tWidth, &tHeight);
+    dst = {
+        (static_cast<float>(this->WindowWidth) - tWidth) / 2.0f,
+        linePositionOffset,
+        tWidth, tHeight
+    };
+
+    SDL_RenderTexture(this->renderer, texture, nullptr, &dst);
+    
+    SDL_DestroyTexture(texture);
+    SDL_DestroySurface(surface);
+
+    linePositionOffset += tHeight * 2;
+
+    for (const std::string &line : tips) {
+        surface = TTF_RenderText_Blended(
+            this->font, line.c_str(), line.size(), SDL_Color({255, 255, 255})
+        );
+        texture = SDL_CreateTextureFromSurface(this->renderer, surface);
+
+        SDL_GetTextureSize(texture, &tWidth, &tHeight);
+        dst = {
+            (static_cast<float>(this->WindowWidth) - tWidth) / 2.0f,
+            linePositionOffset,
+            tWidth, tHeight
+        };
+        
+        SDL_RenderTexture(this->renderer, texture, nullptr, &dst);
+
+        linePositionOffset += tHeight;
 
         SDL_DestroyTexture(texture);
         SDL_DestroySurface(surface);

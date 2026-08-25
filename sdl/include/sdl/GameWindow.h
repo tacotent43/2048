@@ -24,10 +24,14 @@ class GameWindow {
     float lineOffset = 0.0f;
     int cellSize_px = 0.0f;
 
+    bool openSettings = false;
+
     SDL_Window *window = nullptr;
     SDL_Renderer *renderer = nullptr;
 
     void quit();
+
+    void drawSettingsWindow();
 
     void drawTips();
     

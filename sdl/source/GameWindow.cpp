@@ -9,8 +9,41 @@ void GameWindow::quit() {
     SDL_Quit();
 }
 
+void GameWindow::drawSettingsWindow() {
+    float previousFontSize = TTF_GetFontSize(this->font);
+    TTF_SetFontSize(this->font, 0.1 * this->WindowWidth);
+
+    float tWidth = 0;
+    float tHeight = 0;
+
+    SDL_Surface *surface = nullptr;
+    SDL_Texture *texture = nullptr;
+
+    surface = TTF_RenderText_Blended(this->font, "settings", 8, {255, 255, 255});
+    texture = SDL_CreateTextureFromSurface(this->renderer, surface);
+
+    SDL_GetTextureSize(texture, &tWidth, &tHeight);
+    SDL_FRect dst = {
+        (this->WindowWidth - tWidth) / 2.0f,
+        tHeight / 2.0f,
+        // this->WindowWidth / 2.0f,
+        // this->WindowHeight / 2.0f,
+        tWidth, tHeight
+    };
+
+    SDL_RenderTexture(
+        this->renderer, texture, 
+        nullptr, &dst
+    );
+
+    SDL_DestroySurface(surface);
+    SDL_DestroyTexture(texture);
+
+    TTF_SetFontSize(this->font, previousFontSize);
+}
+
 void GameWindow::drawTips() {
-    std::vector<std::string> logo = {
+    const std::vector<std::string> logo = {
         "   ___   ____  __ __  ____  ", 
         "  |__ \\ / __ \\/ // / ( __ ) ",
         "  __/ // / / / // /_/ __  | ",
@@ -18,7 +51,7 @@ void GameWindow::drawTips() {
         "/____/\\____/  /_/  \\____/   ",
     };
 
-    std::vector<std::string> tips = {
+    const std::vector<std::string> tips = {
         "+-----------------------------------+",
         "| [W] | [UpArrow]     - move up     |",
         "| [S] | [DownArrow]   - move down   |",
@@ -304,33 +337,29 @@ SDL_AppResult GameWindow::event(SDL_Event *event) {
         case SDL_EVENT_KEY_DOWN:
             switch (event->key.key) {
                 case SDLK_W:
-                    this->makeMove(Direction::up);
-                    break;
-                case SDLK_S:
-                    this->makeMove(Direction::down);
-                    break;
-                case SDLK_A:
-                    this->makeMove(Direction::left);
-                    break;
-                case SDLK_D:
-                    this->makeMove(Direction::right);
-                    break;
-
                 case SDLK_UP:
                     this->makeMove(Direction::up);
                     break;
+                case SDLK_S:
                 case SDLK_DOWN:
                     this->makeMove(Direction::down);
                     break;
+                case SDLK_A:
                 case SDLK_LEFT:
                     this->makeMove(Direction::left);
                     break;
+                case SDLK_D:
                 case SDLK_RIGHT:
                     this->makeMove(Direction::right);
                     break;
-                
+
                 case SDLK_R:
                     this->initializeField(this->gameFieldSize);
+                    break;
+                
+                case SDLK_P:
+                case SDLK_ESCAPE:
+                    this->openSettings = !this->openSettings;
             }
             break;
     }
@@ -346,7 +375,9 @@ SDL_AppResult GameWindow::iterate() {
         0, 0, 0, 255
     );
 
-    if (this->showTips) {
+    if (this->openSettings) {
+        this->drawSettingsWindow();
+    } else if (this->showTips) {
         this->drawTips();
     } else {
         this->drawScore();

@@ -21,7 +21,8 @@ FetchContent_MakeAvailable(SDL3_ttf)
 
 include_directories(${CMAKE_SOURCE_DIR})
 
-# add_compile_options(-Wall -Werror -pedantic -fsanitize=address)
+# add_compile_options(-Wall -Wextra -Werror -pedantic -fsanitize=address)
+# add_compile_options(-Wall -Wextra -pedantic -fsanitize=address)
 add_compile_options(-Wall -pedantic -fsanitize=address)
 add_link_options(-fsanitize=address)
 

@@ -14,18 +14,27 @@ class TextRenderer {
 
     TTF_Font *font = nullptr;
 
+    // shared surface and texture
     SDL_Surface *surface = nullptr;
     SDL_Texture *texture = nullptr;
 
+    // shared dst rectangle
+    SDL_FRect dst = {};
+
+    // shared offset points for origin
     float xOffset = 0;
     float yOffset = 0;
+
+    // shared texture height and width
+    float tWidth = 0;
+    float tHeight = 0;
 
 public:
     TextRenderer(SDL_Renderer *renderer, std::string fontPath, float fontSize);
 
     void setOrigin(Origin origin);
 
-    void render(std::string text, SDL_FRect dst, float size);
+    void render(std::string text, float xPos, float yPos, SDL_Color color, float fontSize);
 
     ~TextRenderer() = default;
 };

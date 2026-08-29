@@ -34,7 +34,7 @@ public:
 
     void setOrigin(Origin origin);
 
-    void render(std::string text, float xPos, float yPos, SDL_Color color, float fontSize);
+    void render(const std::string &text, float xPos, float yPos, const SDL_Color &color, const float fontSize);
 
     ~TextRenderer() = default;
 };

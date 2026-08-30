@@ -4,80 +4,129 @@
 void GameWindow::quit() {
     SDL_DestroyRenderer(this->renderer);
     SDL_DestroyWindow(this->window);
-    TTF_CloseFont(this->font);
     TTF_Quit();
     SDL_Quit();
 }
 
+// void GameWindow::drawSettingsWindow() {
+//     float previousFontSize = TTF_GetFontSize(this->font);
+//     TTF_SetFontSize(this->font, 0.1f * this->WindowWidth);
+
+//     float tWidth = 0;
+//     float tHeight = 0;
+
+//     SDL_Surface *surface = nullptr;
+//     SDL_Texture *texture = nullptr;
+
+//     surface = TTF_RenderText_Blended(this->font, "settings", 8, {255, 255, 255});
+//     texture = SDL_CreateTextureFromSurface(this->renderer, surface);
+
+//     SDL_GetTextureSize(texture, &tWidth, &tHeight);
+//     SDL_FRect dst = {
+//         (static_cast<float>(this->WindowWidth) - tWidth) / 2.0f,
+//         tHeight / 2.0f,
+//         tWidth, tHeight
+//     };
+
+//     SDL_RenderTexture(
+//         this->renderer, texture, 
+//         nullptr, &dst
+//     );
+
+//     SDL_DestroySurface(surface);
+//     SDL_DestroyTexture(texture);
+
+//     TTF_SetFontSize(this->font, previousFontSize);
+// }
+
+void GameWindow::drawTips() {
+    const std::vector<std::string> logo = {
+        "   ___   ____  __ __  ____  ", 
+        "  |__ \\ / __ \\/ // / ( __ ) ",
+        "  __/ // / / / // /_/ __  | ",
+        " / __// /_/ /__  __/ /_/ /  ", 
+        "/____/\\____/  /_/  \\____/   ",
+    };
+
+    const std::vector<std::string> tips = {
+        "+-----------------------------------+",
+        "| [W] | [UpArrow]     - move up     |",
+        "| [S] | [DownArrow]   - move down   |",
+        "| [A] | [LeftArrow]   - move left   |",
+        "| [D] | [RightArrow]  - move right  |",
+        "| [R]                 - reset field |",
+        "| [I]                 - info        |",
+        "| [P] | [ESC]         - preferences |",
+        "+-----------------------------------+"
+    };
+
+    float menuTextSize = 0.03f * this->WindowHeight;
+    float linePositionOffset = 0;
+
+    this->textRenderer.setOrigin(Origin::TopMiddle);
+
+    for (const std::string &line : logo) {
+        this->textRenderer.render(
+            line, 
+            this->WindowWidth / 2.0f, linePositionOffset, 
+            SDL_Color{255, 0, 0}, 
+            menuTextSize
+        );
+
+        linePositionOffset += this->textRenderer.getRenderedTextureHeight();
+    }
+    
+    linePositionOffset += this->textRenderer.getRenderedTextureHeight();
+
+    // game info
+    std::string caption = "game information";
+    this->textRenderer.render(
+        "game info",
+        this->WindowWidth / 2.0f, linePositionOffset,
+        SDL_Color{0, 255, 255},
+        menuTextSize
+    );
+
+    linePositionOffset += this->textRenderer.getRenderedTextureHeight() * 2;
+
+    for (const std::string &line : tips) {
+        this->textRenderer.render(
+            line, 
+            this->WindowWidth / 2.0f, linePositionOffset,
+            SDL_Color{255, 255, 255},
+            menuTextSize
+        );
+        linePositionOffset += this->textRenderer.getRenderedTextureHeight();
+    }
+}
+
 void GameWindow::drawScore() {
-    std::string scoreText = "score: ";
-    std::string score = std::to_string(this->field.getScore());
+    // float xOffset = 0.05 * this->WindowWidth;
+    // float yOffset = 0.05 * this->WindowHeight;
 
-    float previousFontSize = TTF_GetFontSize(this->font);
-    TTF_SetFontSize(this->font, 24);
-
-    float xOffset = 0.05 * this->WindowWidth;
-    float yOffset = 0.05 * this->WindowHeight;
-
-    float tWidthText = 0;
-    float tHeightText = 0;
-
-    SDL_Surface *surface = TTF_RenderText_Blended(
-        this->font, scoreText.c_str(), scoreText.size(), SDL_Color({255, 255, 255})
+    this->textRenderer.render(
+        "score: ", 
+        0.05 * this->WindowWidth,
+        0.05 * this->WindowHeight, 
+        SDL_Color{255, 255, 255}
     );
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(this->renderer, surface);
 
-    SDL_GetTextureSize(texture, &tWidthText, &tHeightText);
-    SDL_FRect dst = {xOffset, yOffset, tWidthText, tHeightText};
-
-    SDL_RenderTexture(this->renderer, texture, NULL, &dst);
-
-    SDL_DestroyTexture(texture);
-    SDL_DestroySurface(surface);
-
-    float tWidthScore = 0;
-    float tHeightScore = 0;
-
-    surface = TTF_RenderText_Blended(
-        this->font, score.c_str(), score.size(), SDL_Color({255, 123, 23})
+    this->textRenderer.render(
+        std::to_string(this->field.getScore()),
+        0.05 * this->WindowWidth + this->textRenderer.getRenderedTextureWidth(), 
+        0.05 * this->WindowHeight,
+        SDL_Color{255, 123, 23}
     );
-    texture = SDL_CreateTextureFromSurface(this->renderer, surface);
-
-    SDL_GetTextureSize(texture, &tWidthScore, &tHeightScore);
-    dst = {xOffset + tWidthText, yOffset, tWidthScore, tHeightScore};
-
-    SDL_RenderTexture(this->renderer, texture, NULL, &dst);
-
-    SDL_DestroyTexture(texture);
-    SDL_DestroySurface(surface);
-
-    TTF_SetFontSize(this->font, previousFontSize);
 }
 
 void GameWindow::drawTile(unsigned long long int number, int x, int y) {
     if (number != 0) {
-        std::string text = std::to_string(number);
-
-        float tWidth = 0; 
-        float tHeight = 0;
-
-        float prevFontSize = this->fontSize;
-        TTF_SetFontSize(this->font, this->fontSize * (1 - 0.15f * text.size()));
-
-        SDL_Surface *surface = TTF_RenderText_Blended(
-            this->font, text.c_str(), text.size(), SDL_Color({225, 225, 225})
+        this->textRenderer.render(
+            std::to_string(number),
+            static_cast<float>(x), 
+            static_cast<float>(y),
+            SDL_Color{255, 255, 255}
         );
-        SDL_Texture *texture = SDL_CreateTextureFromSurface(this->renderer, surface);
-
-        SDL_GetTextureSize(texture, &tWidth, &tHeight);
-        SDL_FRect dst = {static_cast<float>(x) - tWidth / 2.0f, static_cast<float>(y) - tHeight / 2.0f, tWidth, tHeight};
-
-        SDL_RenderTexture(this->renderer, texture, NULL, &dst);
-
-        this->fontSize = prevFontSize;
-
-        SDL_DestroyTexture(texture);
-        SDL_DestroySurface(surface);
     }
 }
 
@@ -170,12 +219,9 @@ SDL_AppResult GameWindow::initialize() {
 
     this->initializeField(this->gameFieldSize);
 
-    const char* currentPath = SDL_GetBasePath();
-    this->font = TTF_OpenFont((std::string(currentPath) + "../assets/fonts/JetBrainsMono-Thin.ttf").c_str(), this->fontSize);
-    if (!font) {
-        SDL_Log("Font load error: %s", SDL_GetError());
-        return SDL_APP_FAILURE;
-    }
+    TextRenderer(this->renderer, "../assets/fonts/", "JetBrainsMono-Thin.ttf", this->fontSize);
+
+    std::string currentPath = SDL_GetBasePath();
 
     SDL_Surface *icon = SDL_LoadPNG((std::string(currentPath) + "../assets/logo.png").c_str());
     if (!SDL_SetWindowIcon(this->window, icon)) {
@@ -242,7 +288,7 @@ SDL_AppResult GameWindow::iterate() {
     );
 
     if (this->openSettings) {
-        this->drawSettingsWindow();
+        // this->drawSettingsWindow();
     } else if (this->showTips) {
         this->drawTips();
     } else {

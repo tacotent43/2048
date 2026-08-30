@@ -9,11 +9,12 @@
 
 #include <game/field.h>
 #include <sdl/FPosition.hpp>
+#include <sdl/TextRenderer.h>
 
 class GameWindow {
     size_t gameFieldSize = 5;
     std::string fontString = "JetBrainsMono-Thin.ttf";
-    TTF_Font *font = nullptr;
+    TextRenderer textRenderer;
     float fontSize = 0;
 
     float WindowWidth = 800;

@@ -4,7 +4,7 @@
 #include <SDL3/SDL_main.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
-#include <sdl/ui-modules/Origin.hpp>
+#include <sdl/Origin.hpp>
 
 #include <string>
 
@@ -30,11 +30,15 @@ class TextRenderer {
     float tHeight = 0;
 
 public:
-    TextRenderer(SDL_Renderer *renderer, std::string fontPath, float fontSize);
+    TextRenderer() = default;
+    explicit TextRenderer(SDL_Renderer *renderer, const std::string &fontPath, const std::string &fontName, float fontSize);
 
     void setOrigin(Origin origin);
 
-    void render(const std::string &text, float xPos, float yPos, const SDL_Color &color, const float fontSize);
+    void render(const std::string &text, float xPos, float yPos, const SDL_Color &color, const float fontSize = 0);
 
-    ~TextRenderer() = default;
+    float getRenderedTextureWidth() const;
+    float getRenderedTextureHeight() const;
+
+    ~TextRenderer();
 };

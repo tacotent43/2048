@@ -1,9 +1,9 @@
-#include <sdl/ui-modules/TextRenderer.h>
+#include <sdl/TextRenderer.h>
 
-TextRenderer::TextRenderer(SDL_Renderer *renderer, std::string fontPath, float fontSize) : renderer(renderer) {
-    this->font = TTF_OpenFont((std::string(SDL_GetBasePath()) + "../assets/fonts/JetBrainsMono-Thin.ttf").c_str(), fontSize);
+TextRenderer::TextRenderer(SDL_Renderer *renderer, const std::string &fontPath, const std::string &fontName, float fontSize) : renderer(renderer) {
+    this->font = TTF_OpenFont((std::string(SDL_GetBasePath()) + fontPath + fontName).c_str(), fontSize);
     if (!font) {
-        SDL_Log("Font load error: %d", SDL_GetError());
+        SDL_Log("Font load error: %s", SDL_GetError());
         // return SDL_APP_FAILURE;
     }
 }
@@ -12,7 +12,7 @@ void TextRenderer::setOrigin(Origin origin) {
     this->origin = origin;
 }
 
-void TextRenderer::render(const std::string &text, float xPos, float yPos, const SDL_Color &color, const float fontSize = 0) {
+void TextRenderer::render(const std::string &text, float xPos, float yPos, const SDL_Color &color, const float fontSize) {
     float prevFontSize = TTF_GetFontSize(this->font);
 
     // setting new font size
@@ -33,19 +33,33 @@ void TextRenderer::render(const std::string &text, float xPos, float yPos, const
             xPos -= this->tWidth / 2.0f;
             yPos -= this->tHeight / 2.0f;
             break;
+
         case Origin::TopLeft:
             // doing nothing
             break;
+
         case Origin::TopRight:
             xPos -= this->tWidth;
             break;
+
         case Origin::BottomLeft:
             yPos -= this->tHeight;
             break;
+
         case Origin::BottomRight:
             xPos -= this->tWidth;
             yPos -= this->tHeight;
             break;
+
+        case Origin::TopMiddle:
+            xPos -= this->tWidth / 2;
+            break;
+
+        case Origin::BottomMiddle:
+            xPos -= this->tWidth / 2;
+            yPos -= this->tHeight;
+            break;
+        
         default:
             break;
     }
@@ -64,4 +78,16 @@ void TextRenderer::render(const std::string &text, float xPos, float yPos, const
 
     SDL_DestroyTexture(this->texture);
     SDL_DestroySurface(this->surface);
+}
+
+float TextRenderer::getRenderedTextureWidth() const {
+    return this->tWidth;
+}
+
+float TextRenderer::getRenderedTextureHeight() const {
+    return this->tHeight;
+}
+
+TextRenderer::~TextRenderer() {
+    TTF_CloseFont(this->font);
 }

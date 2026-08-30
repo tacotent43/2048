@@ -2,8 +2,13 @@
 
 enum class Origin {
     Center,
+    
     TopLeft,
     TopRight,
+
     BottomLeft,
-    BottomRight
+    BottomRight, 
+
+    TopMiddle,
+    BottomMiddle,
 };

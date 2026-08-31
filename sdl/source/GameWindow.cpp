@@ -2,9 +2,11 @@
 
 // private
 void GameWindow::quit() {
+    this->textRenderer.reset();
+
     SDL_DestroyRenderer(this->renderer);
     SDL_DestroyWindow(this->window);
-    TTF_Quit();
+    // TTF_Quit();
     SDL_Quit();
 }
 
@@ -63,40 +65,40 @@ void GameWindow::drawTips() {
     float menuTextSize = 0.03f * this->WindowHeight;
     float linePositionOffset = 0;
 
-    this->textRenderer.setOrigin(Origin::TopMiddle);
+    this->textRenderer->setOrigin(Origin::TopMiddle);
 
     for (const std::string &line : logo) {
-        this->textRenderer.render(
+        this->textRenderer->render(
             line, 
             this->WindowWidth / 2.0f, linePositionOffset, 
             SDL_Color{255, 0, 0}, 
             menuTextSize
         );
 
-        linePositionOffset += this->textRenderer.getRenderedTextureHeight();
+        linePositionOffset += this->textRenderer->getRenderedTextureHeight();
     }
     
-    linePositionOffset += this->textRenderer.getRenderedTextureHeight();
+    linePositionOffset += this->textRenderer->getRenderedTextureHeight();
 
     // game info
     std::string caption = "game information";
-    this->textRenderer.render(
+    this->textRenderer->render(
         "game info",
         this->WindowWidth / 2.0f, linePositionOffset,
         SDL_Color{0, 255, 255},
         menuTextSize
     );
 
-    linePositionOffset += this->textRenderer.getRenderedTextureHeight() * 2;
+    linePositionOffset += this->textRenderer->getRenderedTextureHeight() * 2;
 
     for (const std::string &line : tips) {
-        this->textRenderer.render(
+        this->textRenderer->render(
             line, 
             this->WindowWidth / 2.0f, linePositionOffset,
             SDL_Color{255, 255, 255},
             menuTextSize
         );
-        linePositionOffset += this->textRenderer.getRenderedTextureHeight();
+        linePositionOffset += this->textRenderer->getRenderedTextureHeight();
     }
 }
 
@@ -104,24 +106,30 @@ void GameWindow::drawScore() {
     // float xOffset = 0.05 * this->WindowWidth;
     // float yOffset = 0.05 * this->WindowHeight;
 
-    this->textRenderer.render(
+    this->textRenderer->setOrigin(Origin::TopLeft);
+
+    this->textRenderer->render(
         "score: ", 
         0.05 * this->WindowWidth,
         0.05 * this->WindowHeight, 
-        SDL_Color{255, 255, 255}
+        SDL_Color{255, 255, 255}, 
+        static_cast<float>(24)
     );
 
-    this->textRenderer.render(
+    this->textRenderer->render(
         std::to_string(this->field.getScore()),
-        0.05 * this->WindowWidth + this->textRenderer.getRenderedTextureWidth(), 
+        0.05 * this->WindowWidth + this->textRenderer->getRenderedTextureWidth(), 
         0.05 * this->WindowHeight,
-        SDL_Color{255, 123, 23}
+        SDL_Color{255, 123, 23},
+        static_cast<float>(24)
     );
 }
 
 void GameWindow::drawTile(unsigned long long int number, int x, int y) {
     if (number != 0) {
-        this->textRenderer.render(
+        this->textRenderer->setOrigin(Origin::Center);
+
+        this->textRenderer->render(
             std::to_string(number),
             static_cast<float>(x), 
             static_cast<float>(y),
@@ -219,7 +227,8 @@ SDL_AppResult GameWindow::initialize() {
 
     this->initializeField(this->gameFieldSize);
 
-    TextRenderer(this->renderer, "../assets/fonts/", "JetBrainsMono-Thin.ttf", this->fontSize);
+    // TextRenderer(this->renderer, "../assets/fonts/", "JetBrainsMono-Thin.ttf", this->fontSize);
+    this->textRenderer.emplace(TextRenderer(this->renderer, "../assets/fonts/", "JetBrainsMono-Thin.ttf", float(100)));
 
     std::string currentPath = SDL_GetBasePath();
 

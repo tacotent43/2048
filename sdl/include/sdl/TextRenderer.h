@@ -6,6 +6,7 @@
 
 #include <sdl/Origin.hpp>
 
+#include <iostream>
 #include <string>
 
 class TextRenderer {
@@ -30,8 +31,43 @@ class TextRenderer {
     float tHeight = 0;
 
 public:
-    TextRenderer() = default;
-    explicit TextRenderer(SDL_Renderer *renderer, const std::string &fontPath, const std::string &fontName, float fontSize);
+    TextRenderer(SDL_Renderer *renderer, const std::string &fontPath, const std::string &fontName, float fontSize);
+
+    TextRenderer(const TextRenderer&) = delete;
+    TextRenderer& operator=(const TextRenderer&) = delete;
+
+    TextRenderer(TextRenderer&& other) noexcept
+        : renderer(other.renderer),
+        font(other.font),
+        origin(other.origin),
+        surface(other.surface),
+        texture(other.texture),
+        tWidth(other.tWidth),
+        tHeight(other.tHeight)
+    {
+        other.font = nullptr;
+        other.surface = nullptr;
+        other.texture = nullptr;
+    }
+
+    TextRenderer& operator=(TextRenderer&& other) noexcept {
+        if (this != &other) {
+            if (font) TTF_CloseFont(font);
+
+            renderer = other.renderer;
+            font = other.font;
+            origin = other.origin;
+            surface = other.surface;
+            texture = other.texture;
+            tWidth = other.tWidth;
+            tHeight = other.tHeight;
+
+            other.font = nullptr;
+            other.surface = nullptr;
+            other.texture = nullptr;
+        }
+        return *this;
+    }
 
     void setOrigin(Origin origin);
 

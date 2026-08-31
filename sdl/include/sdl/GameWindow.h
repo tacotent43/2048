@@ -14,7 +14,7 @@
 class GameWindow {
     size_t gameFieldSize = 5;
     std::string fontString = "JetBrainsMono-Thin.ttf";
-    TextRenderer textRenderer;
+    std::optional<TextRenderer> textRenderer;
     float fontSize = 0;
 
     float WindowWidth = 800;

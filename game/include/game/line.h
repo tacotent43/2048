@@ -20,9 +20,4 @@ struct Line {
     const Tile& operator[](size_t index) const;
     bool operator==(const Line &other) const;
     bool operator!=(const Line &other) const;
-
-    std::vector<Tile>::iterator begin();
-    std::vector<Tile>::iterator end();
-    std::vector<Tile>::const_iterator begin() const;
-    std::vector<Tile>::const_iterator end() const;
 };

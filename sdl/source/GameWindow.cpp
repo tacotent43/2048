@@ -10,36 +10,19 @@ void GameWindow::quit() {
     SDL_Quit();
 }
 
-// void GameWindow::drawSettingsWindow() {
-//     float previousFontSize = TTF_GetFontSize(this->font);
-//     TTF_SetFontSize(this->font, 0.1f * this->WindowWidth);
+// TODO: implement
+void GameWindow::drawSettingsWindow() {
+    float customFontSize = 0.1f * this->WindowWidth;
 
-//     float tWidth = 0;
-//     float tHeight = 0;
+    this->textRenderer->setOrigin(Origin::TopMiddle);
 
-//     SDL_Surface *surface = nullptr;
-//     SDL_Texture *texture = nullptr;
-
-//     surface = TTF_RenderText_Blended(this->font, "settings", 8, {255, 255, 255});
-//     texture = SDL_CreateTextureFromSurface(this->renderer, surface);
-
-//     SDL_GetTextureSize(texture, &tWidth, &tHeight);
-//     SDL_FRect dst = {
-//         (static_cast<float>(this->WindowWidth) - tWidth) / 2.0f,
-//         tHeight / 2.0f,
-//         tWidth, tHeight
-//     };
-
-//     SDL_RenderTexture(
-//         this->renderer, texture, 
-//         nullptr, &dst
-//     );
-
-//     SDL_DestroySurface(surface);
-//     SDL_DestroyTexture(texture);
-
-//     TTF_SetFontSize(this->font, previousFontSize);
-// }
+    this->textRenderer->render(
+        "settings", 
+        this->WindowWidth / 2.0f, 0,
+        {255, 255, 255},
+        customFontSize
+    );
+}
 
 void GameWindow::drawTips() {
     const std::vector<std::string> logo = {

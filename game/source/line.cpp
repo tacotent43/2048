@@ -65,20 +65,3 @@ bool Line::operator==(const Line &other) const {
 bool Line::operator!=(const Line &other) const {
     return !(*this == other);
 }
-
-// iterators
-std::vector<Tile>::iterator Line::begin() {
-    return this->line.begin();
-}
-
-std::vector<Tile>::iterator Line::end() {
-    return this->line.end();
-}
-
-std::vector<Tile>::const_iterator Line::begin() const {
-    return this->line.begin();
-}
-
-std::vector<Tile>::const_iterator Line::end() const {
-    return this->line.end();
-}

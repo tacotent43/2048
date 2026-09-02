@@ -1,15 +1,11 @@
 #include <game/line.h>
 
-Line::Line() = default;
-
-Line::Line(size_t length) : line(length) {}
-
 void Line::process() {
-    std::vector<Tile> result;
+    Line result;
     Tile pending = 0;
     bool hasPending = false;
     
-    for (Tile element : this->line) {
+    for (Tile element : *this) {
         if (element == 0) continue;
         
         if (!hasPending) {
@@ -33,35 +29,9 @@ void Line::process() {
         result.push_back(pending);
     }
     
-    while (result.size() < this->line.size()) {
+    while (result.size() < this->size()) {
         result.push_back(0);
     }
     
-    this->line = result;
-}
-
-// base methods
-void Line::push_back(Tile tile) {
-    this->line.push_back(tile);
-}
-
-size_t Line::size() const {
-    return this->line.size();
-}
-
-// overloadings
-Tile& Line::operator[](size_t index) {
-    return this->line[index];
-}
-
-const Tile& Line::operator[](size_t index) const {
-    return this->line[index];
-}
-
-bool Line::operator==(const Line &other) const {
-    return this->line == other.line && this->score == other.score;
-}
-
-bool Line::operator!=(const Line &other) const {
-    return !(*this == other);
+    *this = result;
 }

@@ -86,23 +86,23 @@ void GameWindow::drawTips() {
 }
 
 void GameWindow::drawScore() {
-    // float xOffset = 0.05 * this->WindowWidth;
-    // float yOffset = 0.05 * this->WindowHeight;
+    float xOffset = 0.05 * this->WindowWidth;
+    float yOffset = 0.05 * this->WindowHeight;
 
     this->textRenderer->setOrigin(Origin::TopLeft);
 
     this->textRenderer->render(
         "score: ", 
-        0.05 * this->WindowWidth,
-        0.05 * this->WindowHeight, 
+        xOffset,
+        yOffset, 
         SDL_Color{255, 255, 255}, 
         static_cast<float>(24)
     );
 
     this->textRenderer->render(
         std::to_string(this->field.getScore()),
-        0.05 * this->WindowWidth + this->textRenderer->getRenderedTextureWidth(), 
-        0.05 * this->WindowHeight,
+        xOffset + this->textRenderer->getRenderedTextureWidth(), 
+        yOffset,
         SDL_Color{255, 123, 23},
         static_cast<float>(24)
     );
@@ -112,11 +112,14 @@ void GameWindow::drawTile(unsigned long long int number, int x, int y) {
     if (number != 0) {
         this->textRenderer->setOrigin(Origin::Center);
 
+        std::string text = std::to_string(number);
+
         this->textRenderer->render(
-            std::to_string(number),
+            text,
             static_cast<float>(x), 
             static_cast<float>(y),
-            SDL_Color{255, 255, 255}
+            SDL_Color{255, 255, 255}, 
+            this->fontSize * (1 - 0.15f * text.size())
         );
     }
 }

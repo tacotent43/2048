@@ -12,7 +12,7 @@
 #include <sdl/TextRenderer.h>
 
 class GameWindow {
-    size_t gameFieldSize = 5;
+    size_t gameFieldSize = 4;
     std::string fontString = "JetBrainsMono-Thin.ttf";
     std::optional<TextRenderer> textRenderer;
     float fontSize = 0;

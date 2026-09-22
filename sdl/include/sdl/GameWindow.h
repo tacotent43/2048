@@ -50,7 +50,7 @@ public:
     
     bool showTips = false;
 
-    SDL_AppResult initialize();
+    SDL_AppResult initialize(size_t fieldSize);
     SDL_AppResult event(SDL_Event *event);
     SDL_AppResult iterate();
 

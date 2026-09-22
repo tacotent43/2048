@@ -2,13 +2,28 @@
 
 TextRenderer::TextRenderer(SDL_Renderer *renderer, const std::string &fontPath, const std::string &fontName, float fontSize) : renderer(renderer) {
     this->font = TTF_OpenFont((std::string(SDL_GetBasePath()) + fontPath + fontName).c_str(), fontSize);
-    std::cout << std::string(SDL_GetBasePath()) << fontPath << fontName << '\n';
     if (!font) {
         throw std::runtime_error("Font load error");
-        // std::cout << "Font load error: %s" << SDL_GetError() << '\n';
-        // SDL_Log("Font load error: %s", SDL_GetError());
-        // return SDL_APP_FAILURE;
     }
+}
+
+TextRenderer& TextRenderer::operator=(TextRenderer &&other) noexcept {
+    if (this != &other) {
+        if (font) TTF_CloseFont(font);
+
+        renderer = other.renderer;
+        font = other.font;
+        origin = other.origin;
+        surface = other.surface;
+        texture = other.texture;
+        tWidth = other.tWidth;
+        tHeight = other.tHeight;
+
+        other.font = nullptr;
+        other.surface = nullptr;
+        other.texture = nullptr;
+    }
+    return *this;
 }
 
 void TextRenderer::setOrigin(Origin origin) {

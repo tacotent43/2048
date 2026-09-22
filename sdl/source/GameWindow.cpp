@@ -193,7 +193,7 @@ void GameWindow::initializeField(size_t fieldSize) {
 }
 
 // public
-SDL_AppResult GameWindow::initialize() {
+SDL_AppResult GameWindow::initialize(size_t fieldSize) {
     SDL_SetAppMetadata("2048 game", "0.1", "");
 
     if (!SDL_Init(SDL_INIT_VIDEO)) {
@@ -220,7 +220,7 @@ SDL_AppResult GameWindow::initialize() {
 
     SDL_Surface *icon = SDL_LoadPNG((std::string(currentPath) + "../assets/logo.png").c_str());
     if (!SDL_SetWindowIcon(this->window, icon)) {
-        SDL_Log("Unable to set icon at %s", (std::string(currentPath) + "../assets/logo.png").c_str());
+        SDL_Log("Unable to set icon from %s", (std::string(currentPath) + "../assets/logo.png").c_str());
     }
     SDL_DestroySurface(icon);
 
@@ -267,6 +267,18 @@ SDL_AppResult GameWindow::event(SDL_Event *event) {
                 case SDLK_P:
                 case SDLK_ESCAPE:
                     this->openSettings = !this->openSettings;
+                    break;
+                
+                case SDLK_N:
+                    // now we're creating more and more windows;
+                    // field state should be evaluated NOT HERE
+                    this->initialize(++this->gameFieldSize);
+                    break;
+                case SDLK_M:
+                    if (this->gameFieldSize > 4) {
+                        this->initialize(--this->gameFieldSize);
+                    }
+                    break;
             }
             break;
     }

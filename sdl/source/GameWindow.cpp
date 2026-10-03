@@ -270,8 +270,6 @@ SDL_AppResult GameWindow::event(SDL_Event *event) {
                     break;
                 
                 case SDLK_N:
-                    // now we're creating more and more windows;
-                    // field state should be evaluated NOT HERE
                     this->initialize(++this->gameFieldSize);
                     break;
                 case SDLK_M:

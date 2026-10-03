@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <vector>
 #include <string>
 
@@ -7,7 +8,7 @@
 #include <SDL3/SDL_main.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
-#include <game/field.h>
+#include <game/Field.h>
 #include <sdl/FPosition.hpp>
 #include <sdl/TextRenderer.h>
 

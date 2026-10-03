@@ -1,4 +1,4 @@
-#include <game/line.h>
+#include <game/Line.h>
 
 void Line::process() {
     Line result;

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <game/line.h>
-#include "types.hpp"
+#include <game/Line.h>
+#include <game/Types.hpp>
 
 #include <stdio.h>
 #include <vector>

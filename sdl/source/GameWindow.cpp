@@ -10,36 +10,19 @@ void GameWindow::quit() {
     SDL_Quit();
 }
 
-// void GameWindow::drawSettingsWindow() {
-//     float previousFontSize = TTF_GetFontSize(this->font);
-//     TTF_SetFontSize(this->font, 0.1f * this->WindowWidth);
+// TODO: implement
+void GameWindow::drawSettingsWindow() {
+    float customFontSize = 0.1f * this->WindowWidth;
 
-//     float tWidth = 0;
-//     float tHeight = 0;
+    this->textRenderer->setOrigin(Origin::TopMiddle);
 
-//     SDL_Surface *surface = nullptr;
-//     SDL_Texture *texture = nullptr;
-
-//     surface = TTF_RenderText_Blended(this->font, "settings", 8, {255, 255, 255});
-//     texture = SDL_CreateTextureFromSurface(this->renderer, surface);
-
-//     SDL_GetTextureSize(texture, &tWidth, &tHeight);
-//     SDL_FRect dst = {
-//         (static_cast<float>(this->WindowWidth) - tWidth) / 2.0f,
-//         tHeight / 2.0f,
-//         tWidth, tHeight
-//     };
-
-//     SDL_RenderTexture(
-//         this->renderer, texture, 
-//         nullptr, &dst
-//     );
-
-//     SDL_DestroySurface(surface);
-//     SDL_DestroyTexture(texture);
-
-//     TTF_SetFontSize(this->font, previousFontSize);
-// }
+    this->textRenderer->render(
+        "settings", 
+        this->WindowWidth / 2.0f, 0,
+        {255, 255, 255},
+        customFontSize
+    );
+}
 
 void GameWindow::drawTips() {
     const std::vector<std::string> logo = {
@@ -103,23 +86,23 @@ void GameWindow::drawTips() {
 }
 
 void GameWindow::drawScore() {
-    // float xOffset = 0.05 * this->WindowWidth;
-    // float yOffset = 0.05 * this->WindowHeight;
+    float xOffset = 0.05 * this->WindowWidth;
+    float yOffset = 0.05 * this->WindowHeight;
 
     this->textRenderer->setOrigin(Origin::TopLeft);
 
     this->textRenderer->render(
         "score: ", 
-        0.05 * this->WindowWidth,
-        0.05 * this->WindowHeight, 
+        xOffset,
+        yOffset, 
         SDL_Color{255, 255, 255}, 
         static_cast<float>(24)
     );
 
     this->textRenderer->render(
         std::to_string(this->field.getScore()),
-        0.05 * this->WindowWidth + this->textRenderer->getRenderedTextureWidth(), 
-        0.05 * this->WindowHeight,
+        xOffset + this->textRenderer->getRenderedTextureWidth(), 
+        yOffset,
         SDL_Color{255, 123, 23},
         static_cast<float>(24)
     );
@@ -129,11 +112,14 @@ void GameWindow::drawTile(unsigned long long int number, int x, int y) {
     if (number != 0) {
         this->textRenderer->setOrigin(Origin::Center);
 
+        std::string text = std::to_string(number);
+
         this->textRenderer->render(
-            std::to_string(number),
+            text,
             static_cast<float>(x), 
             static_cast<float>(y),
-            SDL_Color{255, 255, 255}
+            SDL_Color{255, 255, 255}, 
+            this->fontSize * (1 - 0.15f * text.size())
         );
     }
 }
@@ -207,7 +193,7 @@ void GameWindow::initializeField(size_t fieldSize) {
 }
 
 // public
-SDL_AppResult GameWindow::initialize() {
+SDL_AppResult GameWindow::initialize(size_t fieldSize) {
     SDL_SetAppMetadata("2048 game", "0.1", "");
 
     if (!SDL_Init(SDL_INIT_VIDEO)) {
@@ -234,7 +220,7 @@ SDL_AppResult GameWindow::initialize() {
 
     SDL_Surface *icon = SDL_LoadPNG((std::string(currentPath) + "../assets/logo.png").c_str());
     if (!SDL_SetWindowIcon(this->window, icon)) {
-        SDL_Log("Unable to set icon at %s", (std::string(currentPath) + "../assets/logo.png").c_str());
+        SDL_Log("Unable to set icon from %s", (std::string(currentPath) + "../assets/logo.png").c_str());
     }
     SDL_DestroySurface(icon);
 
@@ -281,6 +267,16 @@ SDL_AppResult GameWindow::event(SDL_Event *event) {
                 case SDLK_P:
                 case SDLK_ESCAPE:
                     this->openSettings = !this->openSettings;
+                    break;
+                
+                case SDLK_N:
+                    this->initialize(++this->gameFieldSize);
+                    break;
+                case SDLK_M:
+                    if (this->gameFieldSize > 4) {
+                        this->initialize(--this->gameFieldSize);
+                    }
+                    break;
             }
             break;
     }

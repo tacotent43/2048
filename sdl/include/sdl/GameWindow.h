@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <vector>
 #include <string>
 
@@ -7,12 +8,12 @@
 #include <SDL3/SDL_main.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
-#include <game/field.h>
+#include <game/Field.h>
 #include <sdl/FPosition.hpp>
 #include <sdl/TextRenderer.h>
 
 class GameWindow {
-    size_t gameFieldSize = 5;
+    size_t gameFieldSize = 4;
     std::string fontString = "JetBrainsMono-Thin.ttf";
     std::optional<TextRenderer> textRenderer;
     float fontSize = 0;
@@ -50,7 +51,7 @@ public:
     
     bool showTips = false;
 
-    SDL_AppResult initialize();
+    SDL_AppResult initialize(size_t fieldSize);
     SDL_AppResult event(SDL_Event *event);
     SDL_AppResult iterate();
 

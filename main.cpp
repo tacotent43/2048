@@ -5,7 +5,7 @@
 int main() {
     GameWindow window;
     
-    SDL_AppResult initialized = window.initialize();
+    SDL_AppResult initialized = window.initialize(static_cast<size_t>(4));
     if (initialized == SDL_APP_FAILURE) {
         throw std::runtime_error("Could not initialize window");
     }

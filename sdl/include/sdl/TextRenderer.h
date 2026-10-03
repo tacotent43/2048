@@ -50,24 +50,7 @@ public:
         other.texture = nullptr;
     }
 
-    TextRenderer& operator=(TextRenderer&& other) noexcept {
-        if (this != &other) {
-            if (font) TTF_CloseFont(font);
-
-            renderer = other.renderer;
-            font = other.font;
-            origin = other.origin;
-            surface = other.surface;
-            texture = other.texture;
-            tWidth = other.tWidth;
-            tHeight = other.tHeight;
-
-            other.font = nullptr;
-            other.surface = nullptr;
-            other.texture = nullptr;
-        }
-        return *this;
-    }
+    TextRenderer& operator=(TextRenderer &&other) noexcept;
 
     void setOrigin(Origin origin);
 
